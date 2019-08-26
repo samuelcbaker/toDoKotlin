@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">TODO</string>
+    <string name="new_task_title">Criar nova tarefa</string>
+    <string name="save">Salvar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="description_task_hint">Descrição da tarefa</string>
+    <string name="date_task_hint">Data de início</string>
+</resources>
