@@ -90,8 +90,48 @@ class MainActivity : AppCompatActivity(), TaskContract, TaskListener {
     }
 
     override fun onEditClick(task: Task) {
-        presenter.saveTask(task)
-        presenter.getTasks()
+        val dialogBuilder = AlertDialog.Builder(this)
+        val inflater = this.layoutInflater
+        val dialogView = inflater.inflate(R.layout.activity_task, null)
+        dialogBuilder.setView(dialogView)
+
+        val buttonDate = dialogView.findViewById<Button>(R.id.buttonDate)
+        val editTextDescription = dialogView.findViewById<EditText>(R.id.editTextDescription)
+
+        //buttonDate.text = task.date.toLong().form
+
+        buttonDate.setOnClickListener{
+            val c = Calendar.getInstance()
+            val hour = c.get(Calendar.HOUR)
+            val minute = c.get(Calendar.MINUTE)
+            val year = c.get(Calendar.YEAR)
+            val month = c.get(Calendar.MONTH)
+            val dayOfMonth = c.get(Calendar.DAY_OF_MONTH)
+
+            DatePickerDialog(this,DatePickerDialog.OnDateSetListener{view, y, m, d ->
+                TimePickerDialog(this,TimePickerDialog.OnTimeSetListener{ view, h, min ->
+
+                    val calendar = Calendar.getInstance()
+                    calendar.set(y,m,d,h,min)
+                    selectedDate = calendar.time
+                    buttonDate.text =  selectedDate.format()
+
+                },hour,minute,true).show()
+            }, year, month, dayOfMonth).show()
+        }
+
+        dialogBuilder.setTitle(resources.getString(R.string.new_task_title))
+        dialogBuilder.setPositiveButton(resources.getString(R.string.save)) { dialog, whichButton ->
+            presenter.saveTask(Task(null, editTextDescription.text.toString(), selectedDate.time, false))
+            presenter.getTasks()
+        }
+
+        dialogBuilder.setNegativeButton(resources.getString(R.string.cancel)) { dialog, whichButton -> }
+
+
+
+        val b = dialogBuilder.create()
+        b.show()
     }
 
     private fun loadRecyclerTasks(tasks: List<Task>){
@@ -122,7 +162,7 @@ class MainActivity : AppCompatActivity(), TaskContract, TaskListener {
                     val calendar = Calendar.getInstance()
                     calendar.set(y,m,d,h,min)
                     selectedDate = calendar.time
-                    buttonDate.setText(selectedDate.format())
+                    buttonDate.text = selectedDate.format()
 
                 },hour,minute,true).show()
             }, year, month, dayOfMonth).show()
